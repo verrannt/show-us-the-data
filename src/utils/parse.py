@@ -1,7 +1,10 @@
 import json
 import re
 import pandas as pd
+MAX_LENGTH = 64
+OVERLAP = 20
 train_files_path = '../input/coleridgeinitiative-show-us-the-data/train'
+to_return = "heading"
 def count_in_json(json_id,label):
     path_to_json = os.path.join(train_files_path,(json_id+'.json'))
     count_dict = {}
@@ -80,3 +83,19 @@ def parse_for_bert(dataset_label,content):
         elif any(word in sentence.lower() for word in ['data', 'study']):
             all_sent.append(tags)
     return all_sent
+
+def parse_json(json_id):
+    path_to_json = os.path.join(train_files_path,(json_id+'.json'))
+    heading = []
+    content = []
+    with open(path_to_json,'r') as f:
+        json_decode = json.load(f)
+        for data in json_decode:
+            heading.append(data.get('section_title'))
+            content.append(data.get('text'))
+    if to_return == "heading":
+        all_heading = ",".join(heading)
+        return all_heading
+    if to_return == "content":
+        all_content = ".".join(content)
+        return all_content
