@@ -120,6 +120,14 @@ class ParseUtils:
         return pd.read_csv(ParseUtils.TRAIN_DF_PATH)
 
     @staticmethod
+    def read_text(filename):
+        return ParseUtils.read_append_return(filename, output='text')
+
+    @staticmethod
+    def read_headers(filename):
+        return ParseUtils.read_append_return(filename, output='head')
+
+    @staticmethod
     def read_append_return(filename, train_files_path=TRAIN_DATA_PATH, output='text'):
         """
         Function to read json file and then return the text data from them and append to the dataframe
