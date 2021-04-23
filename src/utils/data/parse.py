@@ -153,7 +153,9 @@ class ParseUtils:
     def compute_ner_data(
         max_sample:int, # Maximum number of samples taken from dataframe for
                         # development purposes
-        save:bool=False, # Saved parsed data to storage
+        save:str,       # Save parsed data to storage under the name provided
+                        # here as string ('.json' will be appended). 
+                        # If not provided, will not save.
     ):
         """
         Reads the training data from storage using the train.csv file as well
@@ -180,8 +182,8 @@ class ParseUtils:
         """
 
         # Read data in CSV file
-        train = pd.read_csv(TRAIN_DF_PATH)
-        train = train[:MAX_SAMPLE]
+        train = pd.read_csv(ParseUtils.TRAIN_DF_PATH)
+        train = train[:max_sample]
         print(f'Found {len(train)} raw training rows')
 
         # Group rows by publication ID
@@ -196,7 +198,7 @@ class ParseUtils:
         # Read individual papers by ID from storage
         papers = {}
         for paper_id in train['Id'].unique():
-            with open(f'{TRAIN_DATA_PATH}/{paper_id}.json', 'r') as f:
+            with open(f'{ParseUtils.TRAIN_DATA_PATH}/{paper_id}.json', 'r') as f:
                 paper = json.load(f)
                 papers[paper_id] = paper
 
@@ -239,7 +241,7 @@ class ParseUtils:
 
         # Write data to file
         if save:
-            with open(DATA_PATH+'train_ner.json', 'w') as f:
+            with open(os.path.join(ParseUtils.DATA_PATH,f'{save}.json'), 'w') as f:
                 for row in ner_data:
                     words, nes = list(zip(*row))
                     row_json = {'tokens' : words, 'tags' : nes}
@@ -249,10 +251,10 @@ class ParseUtils:
         return ner_data
 
     @staticmethod
-    def load_ner_data_from_json():
+    def load_ner_data_from_json(filename):
         
         ner_data = []
-        f = open(filename, 'r')
+        f = open(os.path.join(ParseUtils.DATA_PATH, filename), 'r')
         
         for line in f.readlines():
             
@@ -275,3 +277,25 @@ class ParseUtils:
             
         f.close()
         return ner_data
+
+if __name__=='__main__':
+
+    print('Testing parse functionality.')
+
+    # The following are some testing capabilities for the funcitionality
+    # of the components provided in this script
+    ner_data = ParseUtils.compute_ner_data(
+        max_sample=1000, save='testing_functionality')
+
+    assert 'testing_functionality.json' in os.listdir(ParseUtils.DATA_PATH), \
+        "Something went wrong storing the data. Maybe the wrong path?"
+
+    del ner_data
+
+    ner_data = ParseUtils.load_ner_data_from_json('testing_functionality.json')
+
+    os.remove(os.path.join(
+        ParseUtils.DATA_PATH,
+        'testing_functionality.json'))
+
+    print('Done.')
