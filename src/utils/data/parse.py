@@ -11,10 +11,11 @@ class ParseUtils:
     # Needs explanation
     OVERLAP = 20
 
-    DATA_PATH = os.path.dirname(__file__) + '/data/coleridgeinitiative-show-us-the-data/'
-    TRAIN_DATA_PATH = DATA_PATH + 'train'
-    TRAIN_DF_PATH = DATA_PATH + 'train.csv'
-    TEST_DATA_PATH = DATA_PATH + 'test'
+    DATA_PATH = os.path.join(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
+                             'data'), 'coleridgeinitiative-show-us-the-data')
+    TRAIN_DATA_PATH = os.path.join(DATA_PATH, 'train')
+    TRAIN_DF_PATH = os.path.join(DATA_PATH, 'train.csv')
+    TEST_DATA_PATH = os.path.join(DATA_PATH, 'test')
 
     @staticmethod
     def count_in_json(json_id, label):
