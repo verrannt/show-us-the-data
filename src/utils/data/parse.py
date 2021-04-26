@@ -5,10 +5,11 @@ import pandas as pd
 from tqdm import tqdm
 
 class ParseUtils:
-    # Needs explanation
+    # Maximum number of words for each sentence
     MAX_LENGTH = 64
 
-    # Needs explanation
+    # If a sentence exceeds MAX_LENGTH, we split it to multiple sentences 
+    # with overlapping
     OVERLAP = 20
 
     DATA_PATH = os.path.join(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
