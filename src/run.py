@@ -21,6 +21,10 @@ def main():
     USE_PREVIOUSLY_EXTRACTED = True
     USE_PREVIOUSLY_TOKENIZED = False
 
+    # Configure the variables using PipelineConfigs
+    # If SAVE == True, the EXTRACTED_FILENAME and TOKENIZED_FILENAME
+    # will be used to load/save the processed data, depending on what 
+    # function will be called. If SAVE == False, these will be ignored
     configs = PipelineConfigs(
         DATA_PATH = data_path,
         MAX_LENGTH = 64,
@@ -52,8 +56,7 @@ def main():
         # model by running it through the pipeline
         input_ids, tags, attention_mask = pipeline.run(ner_data)
 
-    print('Did we get here')
-
+    # Train BERT model here
     
 
 if __name__=='__main__':
