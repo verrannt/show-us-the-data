@@ -11,6 +11,7 @@ from rich.progress import track
 from tqdm import tqdm
 from transformers import BertTokenizerFast
 
+
 class Pipeline:
 
     def __init__(self, configs):
@@ -163,6 +164,7 @@ class Pipeline:
             max_len = self.configs.MAX_LENGTH,
             overlap = self.configs.OVERLAP,
             max_sample = self.configs.MAX_SAMPLE,
+            max_text_tokens = self.configs.MAX_TEXT_TOKENS,
             train_df_path = self.configs.TRAIN_DF_PATH,
             train_data_path = self.configs.TRAIN_DATA_PATH
         )
@@ -195,6 +197,7 @@ class PipelineConfigs:
         MAX_SAMPLE,
         MAX_LENGTH = 64,
         OVERLAP = 20,
+        MAX_TEXT_TOKENS=200000,
     ):
 
         # Maximum number of words for each sentence
@@ -232,3 +235,4 @@ class PipelineConfigs:
         self.SAVE = SAVE
         self.EXTRACTED_FILENAME = EXTRACTED_FILENAME
         self.TOKENIZED_FILENAME = TOKENIZED_FILENAME
+        self.MAX_TEXT_TOKENS = MAX_TEXT_TOKENS

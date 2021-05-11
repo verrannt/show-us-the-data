@@ -18,7 +18,7 @@ def main():
         'data/coleridgeinitiative-show-us-the-data/'
     )
 
-    USE_PREVIOUSLY_EXTRACTED = True
+    USE_PREVIOUSLY_EXTRACTED = False
     USE_PREVIOUSLY_TOKENIZED = False
 
     # Configure the variables using PipelineConfigs
@@ -33,6 +33,7 @@ def main():
         SAVE = True,
         EXTRACTED_FILENAME = 'train_ner.data',
         TOKENIZED_FILENAME = 'train_ner.data.tokenized',
+        MAX_TEXT_TOKENS=200000
     )
 
     pipeline = Pipeline(configs)
