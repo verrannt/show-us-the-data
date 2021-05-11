@@ -155,6 +155,7 @@ class ParseUtils:
             max_len,
             overlap,
             max_sample,
+            max_text_tokens,
             train_df_path,
             train_data_path,
 
@@ -198,6 +199,14 @@ class ParseUtils:
             'cleaned_label': '|'.join
         }).reset_index()
         print(f'Found {len(train)} unique training rows')
+
+        # Read texts for text length analysis
+        train['text_token_length'] = train['Id'].apply(lambda ID: len(ParseUtils.read_append_return(ID, train_data_path)))
+
+        # Remove texts that have more tokens than max_text_tokens
+        train = train[train['text_token_length'] <= max_text_tokens]
+
+        print(f'Removed texts exceeding max length, {len(train)} training rows left')
 
         # Read individual papers by ID from storage
         papers = {}
