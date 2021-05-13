@@ -140,15 +140,15 @@ class ParseUtils:
         return ner_data
 
     @staticmethod
-    def save_outputs(output_dict, data_path, file_name):
+    def save_file(output, data_path, file_name):
         with open(os.path.join(data_path, file_name), 'wb') as f:
-            pickle.dump(output_dict, f)
+            pickle.dump(output, f)
 
     @staticmethod
-    def load_outputs(data_path, file_name):
+    def load_file(data_path, file_name):
         with open(os.path.join(data_path, file_name), 'rb') as f:
-            output_dict = pickle.load(f)
-        return output_dict
+            output = pickle.load(f)
+        return output
 
     @staticmethod
     def extract(
