@@ -133,7 +133,7 @@ class Pipeline:
             console.log('Computed attention mask')
 
         if self.configs.SAVE:
-            ParseUtils.save_outputs(
+            ParseUtils.save_file(
                 {
                     'input_ids': input_ids, 
                     'tags': tags,
@@ -149,7 +149,7 @@ class Pipeline:
         """
         Recover the outputs of a previously completed run from storage.
         """
-        output_dict = ParseUtils.load_outputs(
+        output_dict = ParseUtils.load_file(
             self.configs.DATA_PATH,
             self.configs.TOKENIZED_FILENAME,
         )
