@@ -5,11 +5,12 @@ import pandas as pd
 import pickle
 from tqdm import tqdm
 
+
 class ParseUtils:
 
     @staticmethod
     def count_in_json(json_id, label, train_data_path):
-        path_to_json = os.path.join(train_data_path, (json_id+'.json'))
+        path_to_json = os.path.join(train_data_path, (json_id + '.json'))
         count_dict = {}
         with open(path_to_json, 'r') as f:
             json_decode = json.load(f)
@@ -38,7 +39,6 @@ class ParseUtils:
         """
         txt = re.sub('[^A-Za-z0-9]+', ' ', str(txt)).strip()
 
-
         return txt
 
     @staticmethod
@@ -52,7 +52,7 @@ class ParseUtils:
 
     @staticmethod
     def tag_sentence(sentence, labels):  # requirement: both sentence and 
-                                         # labels are already cleaned
+        # labels are already cleaned
         sentence_words = sentence.split()
 
         if labels is not None and any(re.findall(f'\\b{label}\\b', sentence)
@@ -72,27 +72,6 @@ class ParseUtils:
         else:  # negative sample
             nes = ['O'] * len(sentence_words)
             return False, list(zip(sentence_words, nes))
-
-    @staticmethod
-    def parse_json(json_id, to_return):
-        path_to_json = os.path.join(ParseUtils.TRAIN_DATA_PATH, (json_id+'.json'))
-        heading = []
-        content = []
-        with open(path_to_json, 'r') as f:
-            json_decode = json.load(f)
-            for data in json_decode:
-                heading.append(data.get('section_title'))
-                content.append(data.get('text'))
-        if to_return == "heading":
-            all_heading = ",".join(heading)
-            return all_heading
-        if to_return == "content":
-            all_content = ".".join(content)
-            return all_content
-
-    @staticmethod
-    def get_train_df():
-        return pd.read_csv(ParseUtils.TRAIN_DF_PATH)
 
     @staticmethod
     def read_append_return(filename, train_data_path, output='text'):
@@ -129,35 +108,34 @@ class ParseUtils:
         with open(os.path.join(data_path, file_name), 'w') as f:
             for row in ner_data:
                 words, nes = list(zip(*row))
-                row_json = {'tokens' : words, 'tags' : nes}
+                row_json = {'tokens': words, 'tags': nes}
                 json.dump(row_json, f)
                 f.write('\n')
-    
+
     @staticmethod
     def load_extracted(data_path, file_name):
-        
+
         ner_data = []
         f = open(os.path.join(data_path, file_name), 'r')
-        
+
         for line in f.readlines():
-            
             # Each line is formatted in JSON format, e.g.
             # { "tokens" : ["A", "short", "sentence"],
             #   "tags"   : ["0", "0", "0"] }
             sentence = json.loads(line)
-            
+
             # From the tokens and tags, we create a list of 
             # tuples of the form
             # [ ("A", "0"), ("short", "0"), ("sentence", "0")]
             sentence_tuple_list = [
-                (token, tag) for token, tag 
-                in zip(sentence["tokens"],sentence["tags"])
+                (token, tag) for token, tag
+                in zip(sentence["tokens"], sentence["tags"])
             ]
-            
+
             # Each of these parsed sentences becomes an entry
             # in our overall data list
             ner_data.append(sentence_tuple_list)
-            
+
         f.close()
         return ner_data
 
@@ -174,11 +152,12 @@ class ParseUtils:
 
     @staticmethod
     def extract(
-        max_len,
-        overlap,
-        max_sample,
-        train_df_path,
-        train_data_path,
+            max_len,
+            overlap,
+            max_sample,
+            max_text_tokens,
+            train_df_path,
+            train_data_path,
 
     ):
         """
@@ -221,6 +200,14 @@ class ParseUtils:
         }).reset_index()
         print(f'Found {len(train)} unique training rows')
 
+        # Read texts for text length analysis
+        train['text_token_length'] = train['Id'].apply(lambda ID: len(ParseUtils.read_append_return(ID, train_data_path)))
+
+        # Remove texts that have more tokens than max_text_tokens
+        train = train[train['text_token_length'] <= max_text_tokens]
+
+        print(f'Removed texts exceeding max length, {len(train)} training rows left')
+
         # Read individual papers by ID from storage
         papers = {}
         for paper_id in train['Id'].unique():
@@ -228,45 +215,45 @@ class ParseUtils:
                 paper = json.load(f)
                 papers[paper_id] = paper
 
-        cnt_pos, cnt_neg = 0, 0 # number of sentences that contain/not contain labels
+        cnt_pos, cnt_neg = 0, 0  # number of sentences that contain/not contain labels
         ner_data = []
 
         pbar = tqdm(total=len(train))
         for i, id, dataset_label in train[['Id', 'dataset_label']].itertuples():
             # paper
             paper = papers[id]
-            
+
             # labels
             labels = dataset_label.split('|')
             labels = [ParseUtils.clean_training_text(label) for label in labels]
-            
+
             # sentences
             sentences = set([
-                        ParseUtils.clean_training_text(sentence) 
-                            for section in paper 
-                                for sentence in section['text'].split('.') 
-                        ])
+                ParseUtils.clean_training_text(sentence)
+                for section in paper
+                for sentence in section['text'].split('.')
+            ])
             sentences = ParseUtils.shorten_sentences(
                 sentences, max_len, overlap)
 
             # only accept sentences with length > 10 chars
-            sentences = [sentence for sentence in sentences if len(sentence) > 10] 
-            
+            sentences = [sentence for sentence in sentences if len(sentence) > 10]
+
             # positive sample
             for sentence in sentences:
                 is_positive, tags = ParseUtils.tag_sentence(sentence, labels)
                 if is_positive:
                     cnt_pos += 1
                     ner_data.append(tags)
-                elif any(word in sentence.lower() for word in ['data', 'study']): 
+                elif any(word in sentence.lower() for word in ['data', 'study']):
                     ner_data.append(tags)
                     cnt_neg += 1
-            
+
             # process bar
             pbar.update(1)
             pbar.set_description(f"Training data size: {cnt_pos} positives + {cnt_neg} negatives")
-            
+
         # shuffling
-        #random.shuffle(ner_data)
+        # random.shuffle(ner_data)
 
         return ner_data
