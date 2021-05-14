@@ -130,7 +130,12 @@ class Pipeline:
             console.log('Converted to integer ids')
 
             # Compute attention mask from input tokens
-            attention_mask = self.get_attention_mask(input_ids)
+            attention_mask = self.get_attention_mask(
+                input_ids,
+                # Only ignore [PAD] tokens (integer 0)
+                ignore_tokens=[0]
+            )
+            
             console.log('Computed attention mask')
 
         if self.configs.SAVE:
