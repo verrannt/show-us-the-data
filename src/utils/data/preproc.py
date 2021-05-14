@@ -182,7 +182,9 @@ class Pipeline:
             max_sample = self.configs.MAX_SAMPLE,
             max_text_tokens = self.configs.MAX_TEXT_TOKENS,
             train_df_path = self.configs.TRAIN_DF_PATH,
-            train_data_path = self.configs.TRAIN_DATA_PATH
+            train_data_path = self.configs.TRAIN_DATA_PATH,
+            ignore_label_case = self.configs.IGNORE_LABEL_CASE,
+            exclude_non_exact_label_match = self.configs.EXCLUDE_NON_EXACT_LABEL_MATCH
         )
 
         # Write data to file
@@ -214,6 +216,8 @@ class PipelineConfigs:
         MAX_LENGTH = 64,
         OVERLAP = 20,
         MAX_TEXT_TOKENS=200000,
+        IGNORE_LABEL_CASE=True,
+        EXCLUDE_NON_EXACT_LABEL_MATCH=True
     ):
 
         # Maximum number of words for each sentence
@@ -251,4 +255,9 @@ class PipelineConfigs:
         self.SAVE = SAVE
         self.EXTRACTED_FILENAME = EXTRACTED_FILENAME
         self.TOKENIZED_FILENAME = TOKENIZED_FILENAME
+        # Maximum amount of tokens in training texts. Longer texts will be discarded
         self.MAX_TEXT_TOKENS = MAX_TEXT_TOKENS
+        # Whether the tagger should ignore the case of the label when matching labels to the text
+        self.IGNORE_LABEL_CASE = IGNORE_LABEL_CASE
+        # Whether to exclude texts that do not have a single one-on-one (case insensitve) label match
+        self.EXCLUDE_NON_EXACT_LABEL_MATCH = EXCLUDE_NON_EXACT_LABEL_MATCH

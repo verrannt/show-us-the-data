@@ -51,17 +51,25 @@ class ParseUtils:
         return all_positions
 
     @staticmethod
-    def tag_sentence(sentence, labels):  # requirement: both sentence and 
+    def tag_sentence(sentence, labels, ignore_case):  # requirement: both sentence and
+        re_flags = re.IGNORECASE if ignore_case else None
+
         # labels are already cleaned
         sentence_words = sentence.split()
 
-        if labels is not None and any(re.findall(f'\\b{label}\\b', sentence)
-                                      for label in labels):  # positive sample
+        if labels is not None and any(re.findall(f'\\b{label}\\b', sentence,
+                                                 flags=re_flags) for label in labels):  # positive sample
             nes = ['O'] * len(sentence_words)
             for label in labels:
                 label_words = label.split()
 
-                all_pos = ParseUtils.find_sublist(sentence_words, label_words)
+                if ignore_case:
+                    nocase_label_words = list(map(lambda word: word.lower(), label_words))
+                    nocase_sentence_words = list(map(lambda word: word.lower(), sentence_words))
+                    all_pos = ParseUtils.find_sublist(nocase_sentence_words, nocase_label_words)
+                else:
+                    all_pos = ParseUtils.find_sublist(sentence_words, label_words)
+
                 for pos in all_pos:
                     nes[pos] = 'B'
                     for i in range(pos + 1, pos + len(label_words)):
@@ -151,6 +159,15 @@ class ParseUtils:
         return output
 
     @staticmethod
+    def all_labels_mentioned(data):
+        """
+        Method that can be applied to a dataframe and check, for all dataset labels, if they occur in the text at least
+        once. Case insensitive
+        """
+        labels = data['dataset_label'].split("|")
+        return all(list(map(lambda label: data['text'].lower().count(label.lower()) > 0, labels)))
+
+    @staticmethod
     def extract(
             max_len,
             overlap,
@@ -158,6 +175,8 @@ class ParseUtils:
             max_text_tokens,
             train_df_path,
             train_data_path,
+            ignore_label_case,
+            exclude_non_exact_label_match
 
     ):
         """
@@ -200,13 +219,23 @@ class ParseUtils:
         }).reset_index()
         print(f'Found {len(train)} unique training rows')
 
+        print('Loading texts, this might take a while...')
         # Read texts for text length analysis
-        train['text_token_length'] = train['Id'].apply(lambda ID: len(ParseUtils.read_append_return(ID, train_data_path)))
+        train['text'] = train['Id'].apply(lambda ID: ParseUtils.read_append_return(ID, train_data_path))
+        train['text_token_length'] = train['text'].apply(lambda text: len(text))
 
         # Remove texts that have more tokens than max_text_tokens
         train = train[train['text_token_length'] <= max_text_tokens]
-
         print(f'Removed texts exceeding max length, {len(train)} training rows left')
+
+        if exclude_non_exact_label_match:
+            # Count label mentions in text
+            train["all_labels_mentioned"] = train.apply(ParseUtils.all_labels_mentioned, axis=1)
+
+            # Remove texts that have 0 label count for at least 1 label
+            train = train[train['all_labels_mentioned']]
+            print(f'Removed texts that had at least one label with 0 exact (case insenstive) matches in the text, '
+                  f'{len(train)} training rows left')
 
         # Read individual papers by ID from storage
         papers = {}
@@ -241,7 +270,7 @@ class ParseUtils:
 
             # positive sample
             for sentence in sentences:
-                is_positive, tags = ParseUtils.tag_sentence(sentence, labels)
+                is_positive, tags = ParseUtils.tag_sentence(sentence, labels, ignore_label_case)
                 if is_positive:
                     cnt_pos += 1
                     ner_data.append(tags)
