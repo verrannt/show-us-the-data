@@ -53,6 +53,11 @@ def main():
             ner_data = pipeline.extract()
             console.log('Extracted data')
 
+        # If you want to set a custom tokenizer, call this function before
+        # calling `run()`
+        #pipeline.set_tokenizer(BertTokenizerFast.from_pretrained(
+        #    'bert-base-cased', do_lower_case=False))
+
         # Using the extracted data, we can compute the input data for the 
         # model by running it through the pipeline
         input_ids, tags, attention_mask = pipeline.run(ner_data)

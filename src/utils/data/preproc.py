@@ -16,6 +16,14 @@ class Pipeline:
 
     def __init__(self, configs):
         self.configs = configs
+        self.tokenizer = None
+
+    def set_tokenizer(self, tokenizer):
+        """
+        Set a custom tokenizer to be used when running the pipeline.
+        If not, this will default to BERTTokenizerFast in `run()`
+        """
+        self.tokenizer = tokenizer
 
     def tokenize_and_preserve_labels(self, tupled_sentence):
         tokenized_sentence = []
@@ -81,9 +89,12 @@ class Pipeline:
         console = Console()
 
         # Initialize tokenizer
-        self.tokenizer = BertTokenizerFast.from_pretrained(
-            'bert-base-cased', do_lower_case=False)
-        console.log('Initialized tokenizer')
+        if not self.tokenizer:
+            self.tokenizer = BertTokenizerFast.from_pretrained(
+                'bert-base-cased', do_lower_case=False)
+            console.log('Initialized default BERT tokenizer')
+        else:
+            console.log('Using custom tokenizer')
 
         # Tokenize into known tokens
         ner_data = [
