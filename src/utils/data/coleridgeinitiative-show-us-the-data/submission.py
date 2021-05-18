@@ -6,6 +6,7 @@ import torch
 import json
 from keras.preprocessing.sequence import pad_sequences
 
+
 class SubmitPred:
 
     def __init__(self, test_csv_path, test_path, model_path, tokenizer_path, batch_size=64):
@@ -62,16 +63,14 @@ class SubmitPred:
 
     @staticmethod
     def jaccard_similarity(s1, s2):
-        l1 = s1.split(" ")
-        l2 = s2.split(" ")
+        l1 = s1
+        l2 = s2
         intersection = len(list(set(l1).intersection(l2)))
         union = (len(l1) + len(l2)) - intersection
         return float(intersection) / union
 
     @staticmethod
     def add_start_end_tokens(tupled_sentence):
-        # print(tupled_sentence)
-        # tupled_sentence= tupled_sentence.split()
         tupled_sentence.insert(0, ('[CLS]'))
         tupled_sentence.append(('[SEP]'))
         return tupled_sentence
@@ -96,7 +95,6 @@ class SubmitPred:
                         any(word in sentence.lower() for word in ['data', 'study'])]
             sentences_e.extend(ner_data)
             paper_length.append(len(ner_data))
-            print(len(ner_data))
         tokenized_words = [self.tokenize_sent(sentence) for sentence in sentences_e]
         start_end = [self.add_start_end_tokens(sentence) for sentence in tokenized_words]
         padding_sentences = self.add_padding(start_end)
@@ -122,22 +120,34 @@ class SubmitPred:
         all_sent_str_1 = all_sent_int
         all_preds_str_1 = all_preds_str
         for pap_len in paper_length:
-            print(pap_len)
             labels = []
             for sentence, pred in zip(all_sent_str_1[:pap_len], all_preds_str_1[:pap_len]):
                 phrase = []
                 for word, tag in zip(sentence, pred):
                     if tag == "I" or tag == "B":
-                        phrase.append(word)
+                        if word != 0 and word != 101 and word != 102:
+                            phrase.append(word)
                     else:
                         if len(phrase) != 0:
                             labels.append(self.tokenizer.decode(phrase))
                             phrase = []
 
             final_predics.append(labels)
-            # print(lol)
             del all_sent_str_1[:pap_len], all_preds_str_1[pap_len]
-        self.sample_submission['PredictionString'] = final_predics
+        final_predics = [[pred for pred in preds if not pred.startswith("#")] for preds in final_predics]
+
+        filtered = []
+        for final_predic in final_predics:
+            filt = []
+            for pred in final_predic:
+                if len(filtered) == 0 or all(
+                        self.jaccard_similarity(pred, filtered_pred) < 0.75 for filtered_pred in filtered):
+                    filt.append(pred)
+            filtered.append(filt)
+
+        self.final_predics = final_predics
+        self.filtered = filtered
+        self.sample_submission['PredictionString'] = filtered
         self.sample_submission['PredictionString'] = self.sample_submission.apply(
             lambda x: "|".join(x.PredictionString), axis=1)
 
