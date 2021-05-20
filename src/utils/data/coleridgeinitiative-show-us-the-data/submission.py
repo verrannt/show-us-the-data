@@ -118,15 +118,11 @@ class SubmitPred:
             all_predictions.extend(label_indices)
 
         all_preds_str = [[self.tag2str[token] for token in pred] for pred in all_predictions]
-        all_sent_str = [self.tokenizer.convert_ids_to_tokens(sent) for sent in input_ids]
         all_sent_int = [ids for ids in input_ids]
         final_predics = []
-        all_sent_str_1 = all_sent_int
-        all_preds_str_1 = all_preds_str
         for pap_len in paper_length:
             labels = []
-            test_all_labels = []
-            for sentence, pred in zip(all_sent_str_1[:pap_len], all_preds_str_1[:pap_len]):
+            for sentence, pred in zip(all_sent_int[:pap_len], all_preds_str[:pap_len]):
                 phrase = []
                 phrase_test = []
                 for word, tag in zip(sentence, pred):
@@ -142,7 +138,7 @@ class SubmitPred:
                             phrase = []
 
             final_predics.append(labels)
-            del all_sent_str_1[:pap_len], all_preds_str_1[:pap_len]
+            del all_sent_int[:pap_len], all_preds_str[:pap_len]
         final_predics = [[pred for pred in preds if not pred.startswith("#")] for preds in final_predics]
 
         filtered = []
