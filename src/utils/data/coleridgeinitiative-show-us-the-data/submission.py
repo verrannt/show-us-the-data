@@ -88,29 +88,28 @@ class SubmitPred:
             with open(f'{self.test_path}/{paper_id}', 'r') as f:
                 paper = json.load(f)
                 papers[paper_id] = paper
-        for id in self.submission['Id']:
-            paper = papers[id]
             sentences = set(
                 [self.clean_training_text(sentence) for section in paper for sentence in section['text'].split('.')])
             sentences = self.shorten_sentences(sentences, self.MAX_LENGTH, self.OVERLAP)
             sentences = [sentence for sentence in sentences if len(sentence) > 10]
-            ner_data = [sentence for sentence in sentences if
-                        any(word in sentence.lower() for word in ['data', 'study'])]
-            sentences_e.extend(ner_data)
-            print(f"paper {id} length: {len(ner_data)}")
-            paper_length.append(len(ner_data))
+            sentences_e.extend(sentences)
+            print(f"paper {id} length: {len(sentences)}")
+            paper_length.append(len(sentences))
         tokenized_words = [self.tokenize_sent(sentence) for sentence in sentences_e]
         start_end = [self.add_start_end_tokens(sentence) for sentence in tokenized_words]
         padding_sentences = self.add_padding(start_end)
         input_ids = [self.tokenizer.convert_tokens_to_ids(text) for text in padding_sentences]
-        attention_mask = self.get_attention_mask(input_ids, ignore_tokens=[0, 101, 102])
-        predicts = torch.tensor(input_ids)
-        masks = torch.tensor(attention_mask)
+        attention_mask = self.get_attention_mask(input_ids, ignore_tokens=[0])
+
+        predicts = torch.tensor(input_ids).to(device)
+        masks = torch.tensor(attention_mask).to(device)
+
         predict_data = TensorDataset(predicts, masks)
         predict_dataloader = DataLoader(predict_data, batch_size=self.batch_size)
+
         all_predictions = []
         for step, batch in enumerate(predict_dataloader):
-            batch = tuple(t.to(device) for t in batch)
+            batch = tuple(t for t in batch)
             b_input_ids, b_input_mask = batch
             with torch.no_grad():
                 output = self.model(b_input_ids, attention_mask=b_input_mask)
