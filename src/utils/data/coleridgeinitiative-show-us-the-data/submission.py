@@ -88,8 +88,6 @@ class SubmitPred:
             with open(f'{self.test_path}/{paper_id}', 'r') as f:
                 paper = json.load(f)
                 papers[paper_id] = paper
-        for id in self.submission['Id']:
-            paper = papers[id]
             sentences = set(
                 [self.clean_training_text(sentence) for section in paper for sentence in section['text'].split('.')])
             sentences = self.shorten_sentences(sentences, self.MAX_LENGTH, self.OVERLAP)
