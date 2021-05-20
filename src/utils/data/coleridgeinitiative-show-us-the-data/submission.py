@@ -31,6 +31,10 @@ class SubmitPred:
             tokenized_sentence.extend(tokenized_word)
         return tokenized_sentence
 
+    def read_and_create_csv(self):
+        all_test_papers = os.listdir('../input/coleridgeinitiative-show-us-the-data/test')
+        self.submission = pd.DataFrame({'Id': all_test_papers})
+
     @staticmethod
     def shorten_sentences(sentences, max_len, overlap):
         short_sentences = []
@@ -62,17 +66,15 @@ class SubmitPred:
         return [[float(token not in ignore_tokens) for token in sent] for sent in input_ids]
 
     @staticmethod
-    def jaccard_similarity(s1, s2):
-        l1 = s1
-        l2 = s2
-        intersection = len(list(set(l1).intersection(l2)))
-        union = (len(l1) + len(l2)) - intersection
+    def jaccard_similarity(list1, list2):
+        intersection = len(list(set(list1).intersection(list2)))
+        union = (len(list1) + len(list2)) - intersection
         return float(intersection) / union
 
     @staticmethod
     def add_start_end_tokens(tupled_sentence):
-        tupled_sentence.insert(0, ('[CLS]'))
-        tupled_sentence.append(('[SEP]'))
+        tupled_sentence.insert(0, '[CLS]')
+        tupled_sentence.append('[SEP]')
         return tupled_sentence
 
     def run(self):
@@ -81,11 +83,12 @@ class SubmitPred:
         paper_length = []
         sentences_e = []
         papers = {}
-        for paper_id in self.sample_submission['Id']:
-            with open(f'{self.test_path}/{paper_id}.json', 'r') as f:
+        self.read_and_create_csv()
+        for paper_id in self.submission['Id']:
+            with open(f'{self.test_path}/{paper_id}', 'r') as f:
                 paper = json.load(f)
                 papers[paper_id] = paper
-        for id in self.sample_submission['Id']:
+        for id in self.submission['Id']:
             paper = papers[id]
             sentences = set(
                 [self.clean_training_text(sentence) for section in paper for sentence in section['text'].split('.')])
@@ -94,6 +97,7 @@ class SubmitPred:
             ner_data = [sentence for sentence in sentences if
                         any(word in sentence.lower() for word in ['data', 'study'])]
             sentences_e.extend(ner_data)
+            print(f"paper {id} length: {len(ner_data)}")
             paper_length.append(len(ner_data))
         tokenized_words = [self.tokenize_sent(sentence) for sentence in sentences_e]
         start_end = [self.add_start_end_tokens(sentence) for sentence in tokenized_words]
@@ -121,35 +125,48 @@ class SubmitPred:
         all_preds_str_1 = all_preds_str
         for pap_len in paper_length:
             labels = []
+            test_all_labels = []
             for sentence, pred in zip(all_sent_str_1[:pap_len], all_preds_str_1[:pap_len]):
                 phrase = []
+                phrase_test = []
                 for word, tag in zip(sentence, pred):
+
                     if tag == "I" or tag == "B":
+                        phrase_test.append(word)
                         if word != 0 and word != 101 and word != 102:
                             phrase.append(word)
                     else:
                         if len(phrase) != 0:
                             labels.append(self.tokenizer.decode(phrase))
+                            phrase_test = []
                             phrase = []
 
             final_predics.append(labels)
-            del all_sent_str_1[:pap_len], all_preds_str_1[pap_len]
+            del all_sent_str_1[:pap_len], all_preds_str_1[:pap_len]
         final_predics = [[pred for pred in preds if not pred.startswith("#")] for preds in final_predics]
 
         filtered = []
         for final_predic in final_predics:
             filt = []
             for pred in final_predic:
-                if len(filtered) == 0 or all(
-                        self.jaccard_similarity(pred, filtered_pred) < 0.75 for filtered_pred in filtered):
+                if len(filt) == 0:
                     filt.append(pred)
+                else:
+                    flag = 0
+                    for filtered_pred in filt:
+                        if self.jaccard_similarity(filtered_pred.split(), pred.split()) > 0.70:
+                            flag = 1
+                        if flag == 0:
+                            filt.append(pred)
+
             filtered.append(filt)
 
         self.final_predics = final_predics
+        filtered = ["|".join(filt) if len(filt) != 0 else filt for filt in filtered]
         self.filtered = filtered
-        self.sample_submission['PredictionString'] = filtered
-        self.sample_submission['PredictionString'] = self.sample_submission.apply(
-            lambda x: "|".join(x.PredictionString), axis=1)
+        self.submission['PredictionString'] = filtered
+        print("Predictions Complete")
+        # self.submission['PredictionString'] = self.submission.apply(lambda x:"|".join(x.PredictionString),axis=1)
 
     def save_csv(self):
-        self.sample_submission.to_csv(f'submission.csv', index=False)
+        self.submission.to_csv(f'submission.csv', index=False)
