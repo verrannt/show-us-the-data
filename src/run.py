@@ -31,8 +31,8 @@ def main():
         OVERLAP = 20,
         MAX_SAMPLE = None,
         SAVE = True,
-        EXTRACTED_FILENAME = 'train_ner.data',
-        TOKENIZED_FILENAME = 'train_ner.data.tokenized',
+        EXTRACTED_FILENAME = 'ner.uniquelab.data',
+        TOKENIZED_FILENAME = 'ner.uniquelab.tokenized',
         MAX_TEXT_TOKENS=200000
     )
 
@@ -46,11 +46,11 @@ def main():
     else:
         # If we have extracted data in storage, use it
         if USE_PREVIOUSLY_EXTRACTED:
-            ner_data = pipeline.load_extracted()
+            train_ner_data, val_ner_data = pipeline.load_extracted()
             console.log('Loaded extracted data')
         # Else extract it
         else:
-            ner_data = pipeline.extract()
+            train_ner_data, val_ner_data = pipeline.extract()
             console.log('Extracted data')
 
         # If you want to set a custom tokenizer, call this function before
@@ -60,7 +60,11 @@ def main():
 
         # Using the extracted data, we can compute the input data for the 
         # model by running it through the pipeline
-        input_ids, tags, attention_mask = pipeline.run(ner_data)
+        train_input_ids, train_tags, train_attention_mask = pipeline.run(train_ner_data)
+        train_input_ids, train_tags, train_attention_mask = pipeline.run(val_ner_data)
+
+
+
 
     # Train BERT model here
     

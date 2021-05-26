@@ -3,6 +3,12 @@ import re
 import os
 import pandas as pd
 import pickle
+import math
+import itertools
+import textdistance
+# for debugging
+import matplotlib.pyplot as plt
+
 from tqdm import tqdm
 
 
@@ -112,9 +118,16 @@ class ParseUtils:
             return all_data
 
     @staticmethod
-    def save_extracted(ner_data, data_path, file_name):
-        with open(os.path.join(data_path, file_name), 'w') as f:
-            for row in ner_data:
+    def save_extracted(train_ner_data, val_ner_data, data_path, file_name):
+        with open(os.path.join(data_path, file_name+'.train'), 'w') as f:
+            for row in train_ner_data:
+                words, nes = list(zip(*row))
+                row_json = {'tokens': words, 'tags': nes}
+                json.dump(row_json, f)
+                f.write('\n')
+
+        with open(os.path.join(data_path, file_name+'.val'), 'w') as f:
+            for row in val_ner_data:
                 words, nes = list(zip(*row))
                 row_json = {'tokens': words, 'tags': nes}
                 json.dump(row_json, f)
@@ -122,30 +135,48 @@ class ParseUtils:
 
     @staticmethod
     def load_extracted(data_path, file_name):
+        train_ner_data = []
+        with open(os.path.join(data_path, file_name+'.train'), 'r') as f:
+            for line in f.readlines():
+                # Each line is formatted in JSON format, e.g.
+                # { "tokens" : ["A", "short", "sentence"],
+                #   "tags"   : ["0", "0", "0"] }
+                sentence = json.loads(line)
 
-        ner_data = []
-        f = open(os.path.join(data_path, file_name), 'r')
+                # From the tokens and tags, we create a list of
+                # tuples of the form
+                # [ ("A", "0"), ("short", "0"), ("sentence", "0")]
+                sentence_tuple_list = [
+                    (token, tag) for token, tag
+                    in zip(sentence["tokens"], sentence["tags"])
+                ]
 
-        for line in f.readlines():
-            # Each line is formatted in JSON format, e.g.
-            # { "tokens" : ["A", "short", "sentence"],
-            #   "tags"   : ["0", "0", "0"] }
-            sentence = json.loads(line)
+                # Each of these parsed sentences becomes an entry
+                # in our overall data list
+                train_ner_data.append(sentence_tuple_list)
 
-            # From the tokens and tags, we create a list of 
-            # tuples of the form
-            # [ ("A", "0"), ("short", "0"), ("sentence", "0")]
-            sentence_tuple_list = [
-                (token, tag) for token, tag
-                in zip(sentence["tokens"], sentence["tags"])
-            ]
+        val_ner_data = []
+        with open(os.path.join(data_path, file_name+'.val'), 'r') as f:
+            for line in f.readlines():
+                # Each line is formatted in JSON format, e.g.
+                # { "tokens" : ["A", "short", "sentence"],
+                #   "tags"   : ["0", "0", "0"] }
+                sentence = json.loads(line)
 
-            # Each of these parsed sentences becomes an entry
-            # in our overall data list
-            ner_data.append(sentence_tuple_list)
+                # From the tokens and tags, we create a list of
+                # tuples of the form
+                # [ ("A", "0"), ("short", "0"), ("sentence", "0")]
+                sentence_tuple_list = [
+                    (token, tag) for token, tag
+                    in zip(sentence["tokens"], sentence["tags"])
+                ]
 
-        f.close()
-        return ner_data
+                # Each of these parsed sentences becomes an entry
+                # in our overall data list
+                val_ner_data.append(sentence_tuple_list)
+
+
+        return train_ner_data, val_ner_data
 
     @staticmethod
     def save_file(output, data_path, file_name):
@@ -168,6 +199,39 @@ class ParseUtils:
         return all(list(map(lambda label: data['text'].lower().count(label.lower()) > 0, labels)))
 
     @staticmethod
+    def word_jaccard(string_1, string_2):
+        words_1 = string_1.lower().split()
+        words_2 = string_2.lower().split()
+
+        return textdistance.jaccard(words_1, words_2)
+
+    @staticmethod
+    def unique_train_val_split(data, val_split):
+        # Get all the original unique dataset labels again
+        unique_labels = list(data['dataset_label'].unique())
+        unique_labels = pd.Series(itertools.chain(*[label.split("|") for label in unique_labels])).unique()
+        unique_labels.sort()
+
+        # Map similarity between labels to identify similar labels
+        similarities = [ParseUtils.word_jaccard(unique_labels[i], unique_labels[i+1]) for i in range(len(unique_labels)-1)]
+
+        train_ind = math.floor(len(unique_labels) * (1-val_split))
+        while similarities[train_ind] != 0 and train_ind < len(unique_labels)-2:
+            train_ind += 1
+
+        if train_ind == len(unique_labels)-2:
+            raise Exception("Could not find a unique validation split with given validation size")
+
+        val_labels = unique_labels[train_ind+1:]
+        train_labels = unique_labels[:train_ind+1]
+
+        val = data[data['dataset_label'].apply(lambda labels: any(map(lambda label: label in val_labels, labels.split("|"))))]
+        train = data[data['dataset_label'].apply(lambda labels: any(map(lambda label: label in train_labels, labels.split("|"))))]
+
+
+        return train, val
+
+    @staticmethod
     def extract(
             max_len,
             overlap,
@@ -176,7 +240,8 @@ class ParseUtils:
             train_df_path,
             train_data_path,
             ignore_label_case,
-            exclude_non_exact_label_match
+            exclude_non_exact_label_match,
+            val_split
 
     ):
         """
@@ -244,8 +309,11 @@ class ParseUtils:
                 paper = json.load(f)
                 papers[paper_id] = paper
 
+        # Create train/val data by splitting unique dataset labels
+        train, val = ParseUtils.unique_train_val_split(train, val_split)
+
         cnt_pos, cnt_neg = 0, 0  # number of sentences that contain/not contain labels
-        ner_data = []
+        train_ner_data = []
 
         pbar = tqdm(total=len(train))
         for i, id, dataset_label in train[['Id', 'dataset_label']].itertuples():
@@ -275,13 +343,50 @@ class ParseUtils:
                     cnt_pos += 1
                 else:
                     cnt_neg += 1
-                ner_data.append(tags)
+                train_ner_data.append(tags)
 
             # process bar
             pbar.update(1)
             pbar.set_description(f"Training data size: {cnt_pos} positives + {cnt_neg} negatives")
 
+        cnt_pos, cnt_neg = 0, 0  # number of sentences that contain/not contain labels
+        val_ner_data = []
+
+        pbar = tqdm(total=len(val))
+        for i, id, dataset_label in val[['Id', 'dataset_label']].itertuples():
+            # paper
+            paper = papers[id]
+
+            # labels
+            labels = dataset_label.split('|')
+            labels = [ParseUtils.clean_training_text(label) for label in labels]
+
+            # sentences
+            sentences = set([
+                ParseUtils.clean_training_text(sentence)
+                for section in paper
+                for sentence in section['text'].split('.')
+            ])
+            sentences = ParseUtils.shorten_sentences(
+                sentences, max_len, overlap)
+
+            # only accept sentences with length > 10 chars
+            sentences = [sentence for sentence in sentences if len(sentence) > 10]
+
+            # positive sample
+            for sentence in sentences:
+                is_positive, tags = ParseUtils.tag_sentence(sentence, labels, ignore_label_case)
+                if is_positive:
+                    cnt_pos += 1
+                else:
+                    cnt_neg += 1
+                val_ner_data.append(tags)
+
+            # process bar
+            pbar.update(1)
+            pbar.set_description(f"Validation data size: {cnt_pos} positives + {cnt_neg} negatives")
+
         # shuffling
         # random.shuffle(ner_data)
 
-        return ner_data
+        return train_ner_data, val_ner_data

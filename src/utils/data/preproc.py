@@ -176,7 +176,7 @@ class Pipeline:
                output_dict['attention_mask']
 
     def extract(self):
-        ner_data = ParseUtils.extract(
+        train_ner_data, val_ner_data = ParseUtils.extract(
             max_len = self.configs.MAX_LENGTH,
             overlap = self.configs.OVERLAP,
             max_sample = self.configs.MAX_SAMPLE,
@@ -184,18 +184,20 @@ class Pipeline:
             train_df_path = self.configs.TRAIN_DF_PATH,
             train_data_path = self.configs.TRAIN_DATA_PATH,
             ignore_label_case = self.configs.IGNORE_LABEL_CASE,
-            exclude_non_exact_label_match = self.configs.EXCLUDE_NON_EXACT_LABEL_MATCH
+            exclude_non_exact_label_match = self.configs.EXCLUDE_NON_EXACT_LABEL_MATCH,
+            val_split = self.configs.VAL_SPLIT
         )
 
         # Write data to file
         if self.configs.SAVE:
             ParseUtils.save_extracted(
-                ner_data, 
+                train_ner_data,
+                val_ner_data,
                 self.configs.DATA_PATH, 
                 self.configs.EXTRACTED_FILENAME
             )
 
-        return ner_data
+        return train_ner_data, val_ner_data
 
     def load_extracted(self):
         return ParseUtils.load_extracted(
@@ -217,7 +219,8 @@ class PipelineConfigs:
         OVERLAP = 20,
         MAX_TEXT_TOKENS=200000,
         IGNORE_LABEL_CASE=True,
-        EXCLUDE_NON_EXACT_LABEL_MATCH=True
+        EXCLUDE_NON_EXACT_LABEL_MATCH=True,
+        VAL_SPLIT = 0.10
     ):
 
         # Maximum number of words for each sentence
@@ -261,3 +264,5 @@ class PipelineConfigs:
         self.IGNORE_LABEL_CASE = IGNORE_LABEL_CASE
         # Whether to exclude texts that do not have a single one-on-one (case insensitve) label match
         self.EXCLUDE_NON_EXACT_LABEL_MATCH = EXCLUDE_NON_EXACT_LABEL_MATCH
+
+        self.VAL_SPLIT = VAL_SPLIT
