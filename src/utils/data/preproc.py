@@ -203,6 +203,11 @@ class Pipeline:
             self.configs.EXTRACTED_FILENAME
         )
 
+    def load_mention_pos(self):
+        return ParseUtils.load_mention_positions(
+            self.configs.DATA_PATH,
+            self.configs.MENTION_POS_FILENAME)
+
 
 class PipelineConfigs:
 
@@ -212,6 +217,7 @@ class PipelineConfigs:
         SAVE,
         EXTRACTED_FILENAME,
         TOKENIZED_FILENAME,
+        MENTION_POS_FILENAME,
         MAX_SAMPLE,
         MAX_LENGTH = 64,
         OVERLAP = 20,
@@ -255,6 +261,7 @@ class PipelineConfigs:
         self.SAVE = SAVE
         self.EXTRACTED_FILENAME = EXTRACTED_FILENAME
         self.TOKENIZED_FILENAME = TOKENIZED_FILENAME
+        self.MENTION_POS_FILENAME = MENTION_POS_FILENAME
         # Maximum amount of tokens in training texts. Longer texts will be discarded
         self.MAX_TEXT_TOKENS = MAX_TEXT_TOKENS
         # Whether the tagger should ignore the case of the label when matching labels to the text
