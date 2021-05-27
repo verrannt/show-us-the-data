@@ -1,0 +1,377 @@
+The Global Dataset of Historical Yields for Major Crops
+Hyperspectral benchmark dataset on soil moisture
+Lemons quality control dataset
+Optimized Soil Adjusted Vegetation Index
+U.S. Department of Agriculture's Nutrient Database
+1000 Genomes
+American Gut (Microbiome Project)
+Broad Bioimage Benchmark Collection (BBBC)
+Broad Cancer Cell Line Encyclopedia (CCLE)
+Cell Image Library
+Complete Genomics Public Data
+EBI ArrayExpress
+EBI Protein Data Bank in Europe
+ENCODE project
+Electron Microscopy Pilot Image Archive (EMPIAR)
+Ensembl Genomes
+Gene Expression Omnibus (GEO)
+Gene Ontology (GO)
+Global Biotic Interactions (GloBI)
+Harvard Medical School (HMS) LINCS Project
+Human Genome Diversity Project
+Human Microbiome Project (HMP)
+ICOS PSP Benchmark
+International HapMap Project
+MIT Cancer Genomics Data
+NCBI Proteins
+NCBI Taxonomy
+NCI Genomic Data Commons
+NIH Microarray data
+OpenSNP genotypes data
+Protein Data Bank
+Psychiatric Genomics Consortium
+PubChem Project
+PubGene
+Coremine Medical
+Sanger Catalogue of Somatic Mutations in Cancer (COSMIC)
+Sanger Genomics of Drug Sensitivity in Cancer Project (GDSC)
+Sequence Read Archive(SRA)
+Stanford Microarray Data
+Stowers Institute Original Data Repository
+Systems Science of Biological Dynamics (SSBD) Database
+The Cancer Genome Atlas (TCGA)
+The Catalogue of Life
+The Personal Genome Project
+UCSC Public Data
+Universal Protein Resource (UnitProt)
+Actuaries Climate Index
+Aviation Weather Center
+Brazilian Weather
+Canadian Meteorological Centre
+Climate Data from UEA (updated monthly)
+Dutch Weather
+European Climate Assessment & Dataset
+German Climate Data Center
+Global Climate Data Since 1929
+Charting The Global Climate Change News Narrative 2009
+NASA Global Imagery Browse Services
+NOAA Climate Datasets
+NOAA Realtime Weather Models
+NOAA SURFRAD Meteorology and Radiation Datasets
+The World Bank Open Data Resources for Climate Change
+UEA Climatic Research Unit
+WU Historical Weather Worldwide
+Wahington Post Climate Change
+AMiner Citation Network Dataset
+CrossRef DOI URLs
+DBLP Citation dataset
+DIMACS Road Networks Collection
+NBER Patent Citations
+NIST complex networks data collection
+PyPI and Maven Dependency Network
+Scopus Citation Database
+Small Network Data
+Stanford GraphBase
+Stanford Large Network Dataset Collection
+The Koblenz Network Collection
+The Laboratory for Web Algorithmics (UNIMI)
+UCI Network Data Repository
+UFL sparse matrix collection
+Community Resource for Archiving Wireless Data At Dartmouth
+CAIDA Internet Datasets
+CommonCrawl Web Data over 7 years
+Criteo click
+OONI: Open Observatory of Network Interference
+Open Mobile Data by MobiPerf
+Rapid7 Sonar Internet Scans
+Traffic and Log Data Captured During a Cyber Defense Exercise
+AIcrowd Competitions
+Bruteforce Database
+Challenges in Machine Learning
+DrivenData Competitions for Social Good
+ICWSM Data Challenge
+KDD Cup by Tencent 2012
+Kaggle Competition Data
+Localytics Data Visualization Challenge
+Netflix Prize
+Space Apps Challenge
+TravisTorrent Dataset
+Global Wind Atlas
+Integrated Marine Observing System (IMOS)
+National Estuarine Research Reserves System
+Oil and Gas Authority Open Data
+Smithsonian Institution Global Volcano and Eruption Database
+USGS Earthquake Archives
+American Economic Association (AEA)
+EconData from UMD
+Economic Freedom of the World Data
+Historical MacroEconomic Statistics
+International Trade Statistics
+Internet Product Code Database
+Joint External Debt Data Hub
+Jon Haveman International Trade Data Links
+OpenCorporates Database of Companies in the World
+Our World in Data
+The Atlas of Economic Complexity
+The Center for International Data
+UN Commodity Trade Statistics
+UN Human Development Reports
+College Scorecard Data
+New York State Education Department Data
+Student Data from Free Code Camp
+Global Power Plant Database
+The Public Utility Data Liberation Project (PUDL)
+Smart Meter Data Portal
+Ukraine Energy Centre Datasets
+Top Streamers on Twitch
+BIS Statistics
+Blockmodo Coin Registry
+CBOE Futures Exchange
+Complete FAANG Stock data
+Google Finance
+Google Trends
+NYSE Market Data
+Yahoo Finance
+Awesome 3D Semantic City Models
+ArcGIS Open Data portal
+Factual Global Location Data
+IEEE Geoscience and Remote Sensing Society DASE Website
+Geo Maps
+Geo Spatial Data from ASU
+Geo Wiki Project
+GeoNames Worldwide
+Global Administrative Areas Database (GADM)
+Homeland Infrastructure Foundation
+Landsat 8 on AWS
+List of all countries in all languages
+National Weather Service GIS Data Portal
+OpenStreetMap (OSM)
+Reverse Geocoder using OSM data
+Robin Wilson
+TZ Timezones shapefile
+UN Environmental Data
+World countries in multiple formats
+AWS COVID
+2019 Novel Coronavirus COVID
+The COVID Tracking Project
+EHDP Large Health Data Sets
+Gapminder World demographic databases
+Medicare Coverage Database (MCD)
+Medicare Data Engine of medicare.gov Data
+Medicare Data File
+Number of Ebola Cases and Deaths in Affected Countries (2014)
+OpenPaymentsData
+PhysioBank Databases
+The Cancer Imaging Archive (TCIA)
+The Cancer Genome Atlas project (TCGA)
+World Health Organization Global Health Observatory
+Yahoo Knowledge Graph COVID
+10k US Adult Faces Database
+2GB of Photos of Cats
+Audience Unfiltered faces for gender and age classification
+Affective Image Classification
+Airborne Object Detection and Tracking
+Animals with attributes
+CADDY Underwater Stereo
+Cytology Dataset
+Caltech Pedestrian Detection Benchmark
+Chars74K dataset
+Danbooru Tagged Anime Illustration Dataset
+Face Recognition Benchmark
+HumanEva Dataset
+ImageNet (in WordNet hierarchy)
+Indoor Scene Recognition
+International Affective Picture System, UFL
+KITTI Vision Benchmark Suite
+Labeled Information Library of Alexandria
+MNIST database of handwritten digits
+Massive Visual Memory Stimuli, MIT
+Newspaper Navigator
+Open Images From Google
+SUN database, MIT
+SVIRO Synthetic Vehicle Interior Rear Seat Occupancy
+Stanford Dogs Dataset
+The Action Similarity Labeling (ASLAN) Challenge
+Visual genome
+YouTube Faces Database
+Audi Autonomous Driving Dataset
+Delve Datasets for classification and regression
+Free Music Archive
+IMDb Database
+Keel Repository for classification, regression and time series
+Labeled Faces in the Wild (LFW)
+Lending Club Loan Data
+MovieLens Data Sets
+New Yorker caption contest ratings
+Restaurants Health Score Data in San Francisco
+TikTok Dataset
+UCI Machine Learning Repository
+Yahoo! Ratings and Classification Data
+eBay Online Auctions (2012)
+Canada Science and Technology Museums Corporation's Open Data
+Metropolitan Museum of Art Collection API
+Minneapolis Institute of Arts metadata
+Natural History Museum (London) Data Portal
+Rijksmuseum Historical Art Collection
+Tate Collection metadata
+The Getty vocabularies
+Automatic Keyphrase Extraction
+The Big Bad NLP Database
+Blizzard Challenge Speech
+Blogger Corpus
+ClueWeb09 FACC
+ClueWeb12 FACC
+German Political Speeches Corpus
+Google Books Ngrams (2.2TB)
+Google Web 5gram (1TB, 2006)
+LJ Speech
+Microsoft MAchine Reading COmprehension Dataset (MS MARCO)
+Machine Comprehension Test (MCTest)
+Machine Translation of European languages
+Making Sense of Microposts 2016
+Open Multilingual Wordnet
+POS/NER/Chunk annotated data
+SMS Spam Collection in English
+SaudiNewsNet Collection of Saudi Newspaper Articles
+Stanford Question Answering Dataset (SQuAD)
+USENET postings corpus of 2005~2011
+Universal Dependencies
+Wikipedia Links data
+WordNet databases and tools
+WorldTree Corpus of Explanation Graphs for Elementary Science Questions
+Allen Institute Datasets
+Brain Catalogue
+Collaborative Research in Computational Neuroscience (CRCNS)
+Human Connectome Project
+NIMH Data Archive
+Study Forrest
+CERN Open Data Portal
+Crystallography Open Database
+Ligo Open Science Center (LOSC)
+NASA Exoplanet Archive
+NSSDC (NASA) data
+Sloan Digital Sky Survey (SDSS)
+Prostate Adenocarcinoma (MSKCC/DFCI)
+Ably Open Realtime Data
+Archive.org Datasets
+CMU JASA data archive
+CMU StatLab collections
+Enigma Public
+Grand Comics Database
+KDNuggets Data Collections
+Microsoft Data Science for Research
+Microsoft Research Open Data
+Open Library Data Dumps
+Sample R data sets
+Stats4Stem R data sets (archived)
+The Washington Post List
+UCLA SOCR data collection
+UFO Reports
+Wikileaks 911 pager intercepts
+Yahoo Webscope
+Academic Torrents of data sharing from UMB
+Base dos Dados
+Domains Project
+Harvard Dataverse Network of scientific data
+ICPSR (UMICH)
+Institute of Education Sciences
+National Technical Reports Library
+Open Data Certificates (beta)
+2021 Portuguese Elections Twitter Dataset
+72 hours #gamergate Twitter Scrape
+CMU Enron Email of 150 users
+China Biographical Database
+43k+ Donald Trump Twitter Screenshots
+EDRM Enron EMail of 151 users
+Facebook Data Scrape (2005)
+Facebook Social Connectedness Index
+Facebook Social Networks from LAW (since 2007)
+Foursquare from UMN/Sarwat (2013)
+GitHub Collaboration Archive
+Google Scholar citation relations
+Indie Map: social graph and crawl of top IndieWeb sites
+Mobile Social Networks from UMASS
+Network Twitter Data
+Reddit Comments
+Skytrax' Air Travel Reviews Dataset
+Social Twitter Data
+SourceForge.net Research Data
+Twitch Top Streamer's Data
+Twitter Data for Online Reputation Management
+Twitter Data for Sentiment Analysis
+Twitter Graph of entire Twitter site
+UNIMI/LAW Social Network Datasets
+United States Congress Twitter Data
+Yahoo! Graph and Social Data
+ACLED (Armed Conflict Location & Event Data Project)
+Authoritarian Ruling Elites Database
+Canadian Legal Information Institute
+Correlates of War Project
+Cryptome Conspiracy Theory Items
+European Social Survey
+FBI Hate Crime 2013
+GDELT Global Events Database
+General Social Survey (GSS)
+German Social Survey
+Global Religious Futures Project
+Gun Violence Data
+Humanitarian Data Exchange
+INFORM Index for Risk Management
+International Networks Archive
+International Social Survey Program ISSP
+International Studies Compendium Project
+James McGuire Cross National Data
+MIT Reality Mining Dataset
+Mass Mobilization Data Project
+Microsoft Academic Knowledge Graph
+Minnesota Population Center
+Notre Dame Global Adaptation Index (ND-GAIN)
+Open Crime and Policing Data in England, Wales and Northern Ireland
+Paul Hensel General International Data Page
+PewResearch Internet Survey Project
+PewResearch Society Data Collection
+StackExchange Data Explorer
+Terrorism Research and Analysis Consortium
+Texas Inmates Executed Since 1984
+Titanic Survival Data Set
+UCLA Social Sciences Data Archive
+UN Civil Society Database
+UPJOHN for Labor Employment Research
+Universities Worldwide
+Uppsala Conflict Data Program
+World Bank Open Data
+World Inequality Database
+WorldPop project
+FLOSSmole data
+Libraries.io Open Source Repository and Dependency Metadata
+Public Git Archive
+American Ninja Warrior Obstacles
+Betfair Historical Exchange Data
+Cricsheet Matches (cricket)
+Lahman's Baseball Database
+Retrosheet Baseball Statistics
+USA Soccer Teams and Locations
+Databanks International Cross National Time Series Data Archive
+Hard Drive Failure Rates
+Heart Rate Time Series from MIT
+Time Series Data Library (TSDL) from MU
+Turing Change Point Dataset
+UC Riverside Time Series Dataset
+Airlines OD Data 1987
+Bike Share Systems (BSS) collection
+Dutch Traffic Information
+GeoLife GPS Trajectory from Microsoft Research
+Montreal BIXI Bike Share
+NYC Taxi Trip Data 2009
+NYC Taxi Trip Data 2013 (FOIA/FOILed)
+Open Traffic collection
+Philadelphia Bike Share Stations
+Plane Crash Database
+Renfe (Spanish National Railway Network) dataset
+Toronto Bike Share Stations
+Transport for London (TFL)
+U.S. Bureau of Transportation Statistics (BTS)
+U.S. Domestic Flights 1990 to 2009
+U.S. Freight Analysis Framework since 2007
+U.S. National Highway Traffic Safety Administration
+CS:GO Competitive Matchmaking Data
