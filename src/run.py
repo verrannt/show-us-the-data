@@ -13,15 +13,13 @@ def main():
     console = Console()
 
     # Only works when run from root of project (i.e. outside of 'src/')
-    data_path = 'D:\\Kynntec\\Git_repositories\\show-us-the-data\data\\coleridgeinitiative-show-us-the-data'
-    # data_path = os.path.join(
-    #     os.getcwd(),
-    #     'data/coleridgeinitiative-show-us-the-data/'
-    # )
+    data_path = os.path.join(
+        os.getcwd(),
+        'data/coleridgeinitiative-show-us-the-data/'
+    )
 
-    USE_PREVIOUSLY_EXTRACTED = True
-    USE_PREVIOUSLY_TOKENIZED = True
-    USE_PREVIOUS_MENTIONPOS = False
+    USE_PREVIOUSLY_EXTRACTED = False
+    USE_PREVIOUSLY_TOKENIZED = False
 
     # Configure the variables using PipelineConfigs
     # If SAVE == True, the EXTRACTED_FILENAME and TOKENIZED_FILENAME
@@ -32,10 +30,9 @@ def main():
         MAX_LENGTH = 64,
         OVERLAP = 20,
         MAX_SAMPLE = None,
-        SAVE = False,
+        SAVE = True,
         EXTRACTED_FILENAME = 'train_ner.data',
-        TOKENIZED_FILENAME = 'train_ner.data.scibert-tokenized',
-        MENTION_POS_FILENAME = 'train_ner.data.scibert-mentpos',
+        TOKENIZED_FILENAME = 'train_ner.data.tokenized',
         MAX_TEXT_TOKENS=200000
     )
 
@@ -65,14 +62,8 @@ def main():
         # model by running it through the pipeline
         input_ids, tags, attention_mask = pipeline.run(ner_data)
 
-    if USE_PREVIOUS_MENTIONPOS:
-        mention_positions = pipeline.load_mention_pos()
-    else:
-        ParseUtils.save_mention_positions(tags, data_path, "train_ner.data.scibert-mentpos", o_id=303)  # Normal BERT: 152. SciBERT: 303
-        mention_positions = pipeline.load_mention_pos()
-
     # Train BERT model here
+    
 
-
-if __name__ =='__main__':
+if __name__=='__main__':
     main()

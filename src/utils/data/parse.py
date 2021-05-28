@@ -122,48 +122,30 @@ class ParseUtils:
 
     @staticmethod
     def load_extracted(data_path, file_name):
+
         ner_data = []
-        with open(os.path.join(data_path, file_name), 'r') as f:
-            for line in f.readlines():
-                # Each line is formatted in JSON format, e.g.
-                # { "tokens" : ["A", "short", "sentence"],
-                #   "tags"   : ["0", "0", "0"] }
-                sentence = json.loads(line)
+        f = open(os.path.join(data_path, file_name), 'r')
 
-                # From the tokens and tags, we create a list of
-                # tuples of the form
-                # [ ("A", "0"), ("short", "0"), ("sentence", "0")]
-                sentence_tuple_list = [
-                    (token, tag) for token, tag
-                    in zip(sentence["tokens"], sentence["tags"])
-                ]
+        for line in f.readlines():
+            # Each line is formatted in JSON format, e.g.
+            # { "tokens" : ["A", "short", "sentence"],
+            #   "tags"   : ["0", "0", "0"] }
+            sentence = json.loads(line)
 
-                # Each of these parsed sentences becomes an entry
-                # in our overall data list
-                ner_data.append(sentence_tuple_list)
+            # From the tokens and tags, we create a list of 
+            # tuples of the form
+            # [ ("A", "0"), ("short", "0"), ("sentence", "0")]
+            sentence_tuple_list = [
+                (token, tag) for token, tag
+                in zip(sentence["tokens"], sentence["tags"])
+            ]
 
+            # Each of these parsed sentences becomes an entry
+            # in our overall data list
+            ner_data.append(sentence_tuple_list)
+
+        f.close()
         return ner_data
-
-    @staticmethod
-    def save_mention_positions(tags, data_path, file_name, o_id):
-        mention_positions = [(i_sentence, [i_word for i_word, tag in enumerate(sentence) if tag != o_id])
-                             for i_sentence, sentence in enumerate(tags)
-                             if len([i_word for i_word, tag in enumerate(sentence) if tag != o_id]) > 0]
-
-        with open(os.path.join(data_path, file_name), 'w') as f:
-            for mention in mention_positions:
-                row_json = {'i_sentence': mention[0], 'i_words': mention[1]}
-                json.dump(row_json, f)
-                f.write('\n')
-
-    @staticmethod
-    def load_mention_positions(data_path, file_name):
-        mention_locations = []
-        with open(os.path.join(data_path, file_name), 'r') as f:
-            for sentence in f.readlines():
-                line = json.loads(sentence)
-                mention_locations.append((line["i_sentence"], line["i_words"]))
-        return mention_locations
 
     @staticmethod
     def save_file(output, data_path, file_name):
