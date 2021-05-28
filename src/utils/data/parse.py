@@ -122,29 +122,26 @@ class ParseUtils:
 
     @staticmethod
     def load_extracted(data_path, file_name):
-
         ner_data = []
-        f = open(os.path.join(data_path, file_name), 'r')
+        with open(os.path.join(data_path, file_name), 'r') as f:
+            for line in f.readlines():
+                # Each line is formatted in JSON format, e.g.
+                # { "tokens" : ["A", "short", "sentence"],
+                #   "tags"   : ["0", "0", "0"] }
+                sentence = json.loads(line)
 
-        for line in f.readlines():
-            # Each line is formatted in JSON format, e.g.
-            # { "tokens" : ["A", "short", "sentence"],
-            #   "tags"   : ["0", "0", "0"] }
-            sentence = json.loads(line)
+                # From the tokens and tags, we create a list of
+                # tuples of the form
+                # [ ("A", "0"), ("short", "0"), ("sentence", "0")]
+                sentence_tuple_list = [
+                    (token, tag) for token, tag
+                    in zip(sentence["tokens"], sentence["tags"])
+                ]
 
-            # From the tokens and tags, we create a list of 
-            # tuples of the form
-            # [ ("A", "0"), ("short", "0"), ("sentence", "0")]
-            sentence_tuple_list = [
-                (token, tag) for token, tag
-                in zip(sentence["tokens"], sentence["tags"])
-            ]
+                # Each of these parsed sentences becomes an entry
+                # in our overall data list
+                ner_data.append(sentence_tuple_list)
 
-            # Each of these parsed sentences becomes an entry
-            # in our overall data list
-            ner_data.append(sentence_tuple_list)
-
-        f.close()
         return ner_data
 
     @staticmethod
