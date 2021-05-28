@@ -86,7 +86,7 @@ class ParseUtils:
         """
         Function to read json file and then return the text data from them and append to the dataframe
 
-        Basicall parse json but then from https://www.kaggle.com/prashansdixit/coleridge-initiative-eda-baseline-model
+        Basically parse json but then from https://www.kaggle.com/prashansdixit/coleridge-initiative-eda-baseline-model
         """
         json_path = os.path.join(train_data_path, (filename + '.json'))
         headings = []
@@ -234,7 +234,7 @@ class ParseUtils:
 
             # Remove texts that have 0 label count for at least 1 label
             train = train[train['all_labels_mentioned']]
-            print(f'Removed texts that had at least one label with 0 exact (case insenstive) matches in the text, '
+            print(f'Removed texts that had at least one label with 0 exact (case insensitive) matches in the text, '
                   f'{len(train)} training rows left')
 
         # Read individual papers by ID from storage
@@ -273,10 +273,9 @@ class ParseUtils:
                 is_positive, tags = ParseUtils.tag_sentence(sentence, labels, ignore_label_case)
                 if is_positive:
                     cnt_pos += 1
-                    ner_data.append(tags)
-                elif any(word in sentence.lower() for word in ['data', 'study']):
-                    ner_data.append(tags)
+                else:
                     cnt_neg += 1
+                ner_data.append(tags)
 
             # process bar
             pbar.update(1)
