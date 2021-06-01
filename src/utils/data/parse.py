@@ -122,30 +122,38 @@ class ParseUtils:
 
     @staticmethod
     def load_extracted(data_path, file_name):
-
         ner_data = []
-        f = open(os.path.join(data_path, file_name), 'r')
+        with open(os.path.join(data_path, file_name), 'r') as f:
+            for line in f.readlines():
+                # Each line is formatted in JSON format, e.g.
+                # { "tokens" : ["A", "short", "sentence"],
+                #   "tags"   : ["0", "0", "0"] }
+                sentence = json.loads(line)
 
-        for line in f.readlines():
-            # Each line is formatted in JSON format, e.g.
-            # { "tokens" : ["A", "short", "sentence"],
-            #   "tags"   : ["0", "0", "0"] }
-            sentence = json.loads(line)
+                # From the tokens and tags, we create a list of
+                # tuples of the form
+                # [ ("A", "0"), ("short", "0"), ("sentence", "0")]
+                sentence_tuple_list = [
+                    (token, tag) for token, tag
+                    in zip(sentence["tokens"], sentence["tags"])
+                ]
 
-            # From the tokens and tags, we create a list of 
-            # tuples of the form
-            # [ ("A", "0"), ("short", "0"), ("sentence", "0")]
-            sentence_tuple_list = [
-                (token, tag) for token, tag
-                in zip(sentence["tokens"], sentence["tags"])
-            ]
+                # Each of these parsed sentences becomes an entry
+                # in our overall data list
+                ner_data.append(sentence_tuple_list)
 
-            # Each of these parsed sentences becomes an entry
-            # in our overall data list
-            ner_data.append(sentence_tuple_list)
-
-        f.close()
         return ner_data
+
+    @staticmethod
+    def load_auxiliary_datasets(data_path, file_name):
+        with open(os.path.join(data_path, file_name), 'r') as f:
+            return f.read().split('\n')
+
+    @staticmethod
+    def load_tokenized_auxiliary_datasets(data_path, file_name):
+        with open(os.path.join(data_path, file_name), 'r') as f:
+            datasets = f.read().split('\n')
+            return [[int(item) for item in row.split(',') if item != ''] for row in datasets if len(row) > 0]
 
     @staticmethod
     def save_file(output, data_path, file_name):
@@ -182,7 +190,7 @@ class ParseUtils:
         """
         Reads the training data from storage using the train.csv file as well
         as all json files inside the train folder, and computes a list,
-        where each element is a sentence. Each sentence is itself a list, 
+        where each element is a sentence. Each sentence is itself a list,
         consisting of tuples, where the first element is the word (token) and
         the second is the label (tag).
 
@@ -201,7 +209,7 @@ class ParseUtils:
 
         If `save` is True, the data will be stored on disk in the DATA_PATH
         directory in a single text file, where each line is in JSON format, e.g.
-        
+
             { "tokens" : ["A", "short", "sentence"], "tags" : ["0", "0", "0"] }
         """
 
