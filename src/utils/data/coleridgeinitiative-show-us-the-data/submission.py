@@ -9,11 +9,10 @@ from keras.preprocessing.sequence import pad_sequences
 
 class SubmitPred:
 
-    def __init__(self, test_path, model_path, tokenizer_path, batch_size=128, paper_batch_size=1024):
+    def __init__(self, test_path, model, tokenizer, batch_size=128, paper_batch_size=1024):
         self.test_path = test_path
-        self.model = BertForTokenClassification.from_pretrained(model_path, num_labels=3, output_attentions=False,
-                                                                output_hidden_states=False).to(device)
-        self.tokenizer = BertTokenizerFast.from_pretrained(tokenizer_path, do_lower_case=False)
+        self.model = model
+        self.tokenizer = tokenizer
         self.MAX_LENGTH = 64  # max no. words for each sentence.
         self.OVERLAP = 20
         self.tag2str = {2: 'O', 1: 'I', 0: 'B'}
