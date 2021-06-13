@@ -1,21 +1,12 @@
 # Show US The Data
 
-Code for the Kaggle challenge by the Coleridge Initiative: Show US The Data.
+Code for the Kaggle challenge by the Coleridge Initiative: [Show US The Data](https://www.kaggle.com/c/coleridgeinitiative-show-us-the-data).
 
-## Directory structure
+## Team
 
-* `vis/`: all types of visualisations, like plots and images of model architectures
-* `model/`: model related outputs, like training and testing logs, model weights and results
-* `src/`: contains all source code in different subdirectories:
-  * `models/`: code that implements model architectures
-  * `notebooks/`: Jupyter Notebooks for quick testing and visualization that are not part of the main workflow
-  * `utils/`: utility modules:
-    - `model/`: modules for loading, training and testing your models
-    - `data/`: modules for loading and preprocessing/augmenting your data
-    - `generic.py`: module for generic helper functions, e.g. status printing for scripts
-  * `run.py`: main file in which to set up the logical flow of the project and run different interactions, i.e. call the functions defined in the different modules above
-  
-**Note:** there is no central `data/` directory as data might be placed outside of this repository. If not, I recommend to place it at the root. 
+- [Aashutosh](https://www.kaggle.com/aerigon) ([aerigon](https://github.com/aerigon/))
+- [Thomas](https://www.kaggle.com/thomasrood) ([thomasroodnl](https://github.com/thomasroodnl))
+- [Pascal](https://www.kaggle.com/pascalschroder) ([verrannt](https://github.com/verrannt))
 
 ## Acknowledgements & License
 
