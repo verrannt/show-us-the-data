@@ -7,7 +7,7 @@ Code for the Kaggle challenge by the Coleridge Initiative: [Show US The Data](ht
 While we provide Python files for our code implementations, the important parts that are required for training and submitting models for the competition can be found as Jupyter notebooks under [`src/notebooks/modeling`](src/notebooks/modeling):
 
 - We provide a [`Training.ipynb`](src/notebooks/modeling/Training.ipynb) notebook that trains a BERT-based model of choice on the competition data, using the input processing pipeline defined in [`src/utils/data/preproc.py`](src/utils/data/preproc.py). 
-- Two further notebooks are provided for the data augmentation (`Training (data augmentation).ipynb`) and oversampling (`Training (oversampling).ipynb`) parts of our experiments, also in [`src/notebooks/modeling`](src/notebooks/modeling).
+- Two further notebooks are provided for the [data augmentation](src/notebooks/modeling/Training-Augmentation.ipynb) and [oversampling](src/notebooks/modeling/Training-Oversampling.ipynb) parts of our experiments.
 - The in-depth analysis of our best model can be found in [`SciBERT Result Analysis.ipynb`](src/notebooks/modeling/SciBERT%20Result%20Analysis.ipynb).
 - We have a separate notebook used for submission of all our models in [`Submission.ipynb`](src/notebooks/modeling/Submission.ipynb).
 
